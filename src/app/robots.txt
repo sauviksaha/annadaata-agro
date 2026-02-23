@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://annadaataagro.com/sitemap.xml
+
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+
+Allow: /images/
+Allow: /static/
+Allow: /*.js$
+Allow: /*.css$
+
+Crawl-delay: 10 
