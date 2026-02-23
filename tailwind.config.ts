@@ -107,6 +107,9 @@ const config: Config = {
         fadeInUp: "fadeInUp 0.5s ease-in-out",
         float: "float 6s ease-in-out infinite",
       },
+      transitionTimingFunction: {
+        'drawer': 'cubic-bezier(0.32,0.72,0,1)',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

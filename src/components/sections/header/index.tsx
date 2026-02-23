@@ -154,7 +154,7 @@ export default function Header() {
         aria-label="Navigation"
         className={cn(
           'fixed inset-y-0 right-0 z-50 flex flex-col w-[82vw] max-w-[320px] bg-white md:hidden',
-          'transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
+          'transition-transform duration-300 ease-drawer',
           drawerOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
