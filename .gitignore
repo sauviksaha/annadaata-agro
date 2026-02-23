@@ -11,3 +11,5 @@ public
 yarn-error.log
 npm-debug.log
 .env
+.vercel
+.env*.local

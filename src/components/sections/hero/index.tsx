@@ -176,7 +176,7 @@ export default function Hero() {
           <div className="relative h-[280px] sm:h-[350px] md:h-[400px] lg:h-[500px] xl:h-[550px] order-1 lg:order-2">
             <div
               ref={imageRef}
-              className="absolute inset-0 rounded-xl md:rounded-2xl shadow-lg md:shadow-xl overflow-hidden"
+              className="absolute inset-0 rounded-xl md:rounded-2xl shadow-lg md:shadow-xl overflow-hidden bg-brand-cream"
             >
               <Image
                 src={HeroImg}
@@ -184,7 +184,6 @@ export default function Hero() {
                 fill
                 className="object-cover"
                 priority
-                placeholder="blur"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 50vw"
                 quality={85}
               />
