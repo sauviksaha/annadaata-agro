@@ -206,11 +206,6 @@ export default function Products() {
             />
           ))}
         </div>
-
-        {/* Helper hint — appears once */}
-        <p className="mt-8 text-center text-sm text-muted-foreground/60 select-none">
-          Tap any variety to see a closer look
-        </p>
       </div>
 
       {/* Detail dialog */}

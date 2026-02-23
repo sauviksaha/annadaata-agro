@@ -23,11 +23,20 @@ export const metadata: Metadata = {
     title: 'Annadaata Agro Industries - Rice Manufacturing Company in West Bengal',
     description: 'Leading rice manufacturer in Bardhaman, West Bengal. Premium quality rice varieties including Minikit, Swarna, Kuruva, IR-36, Banshkathi, and Gobindobhog Rice.',
     siteName: 'Annadaata Agro Industries',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Annadaata Agro Industries — Premium Rice Manufacturers, West Bengal',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Annadaata Agro Industries - Rice Manufacturing Company',
     description: 'Leading rice manufacturer in Bardhaman, West Bengal. Premium quality rice varieties with traditional expertise.',
+    images: ['/opengraph-image'],
   },
   alternates: {
     canonical: 'https://annadaataagro.com',
