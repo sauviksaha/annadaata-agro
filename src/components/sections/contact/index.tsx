@@ -90,42 +90,67 @@ export default function Contact() {
     },
   });
 
-  // GSAP Animations
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header animation
-      gsap.from(".section-header", {
-        opacity: 0,
-        y: 30,
-        duration: 1,
-        scrollTrigger: {
-          trigger: ".section-header",
-          start: "top 80%",
-        },
-      });
+      // ── Section header: fade up ─────────────────────────────────────────────
+      gsap.fromTo(
+        '.section-header',
+        { opacity: 0, y: 32 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '.section-header', start: 'top bottom-=80' },
+        }
+      );
 
-      // Contact info items animation
-      gsap.from(".contact-info-item", {
-        opacity: 0,
-        x: -30,
-        stagger: 0.2,
-        duration: 0.8,
-        scrollTrigger: {
-          trigger: ".contact-info-container",
-          start: "top 75%",
-        },
-      });
+      // ── Info panel: slides in from left ────────────────────────────────────
+      gsap.fromTo(
+        '.contact-info-container',
+        { opacity: 0, x: -40 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.contact-info-container',
+            start: 'top bottom-=80',
+          },
+        }
+      );
 
-      // Form animation
-      gsap.from(".contact-form", {
-        opacity: 0,
-        x: 30,
-        duration: 1,
-        scrollTrigger: {
-          trigger: ".contact-form",
-          start: "top 75%",
-        },
-      });
+      // ── Info items: stagger up after panel ─────────────────────────────────
+      gsap.fromTo(
+        '.contact-info-item',
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          stagger: 0.09,
+          ease: 'power3.out',
+          delay: 0.2,
+          scrollTrigger: {
+            trigger: '.contact-info-container',
+            start: 'top bottom-=80',
+          },
+        }
+      );
+
+      // ── Form panel: slides in from right ───────────────────────────────────
+      gsap.fromTo(
+        '.contact-form',
+        { opacity: 0, x: 40 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '.contact-form', start: 'top bottom-=80' },
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();

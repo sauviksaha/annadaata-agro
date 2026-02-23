@@ -1,119 +1,58 @@
-// animations.ts - Framer Motion animation variants for use throughout the site
-import { Variants } from 'framer-motion';
+/**
+ * Shared GSAP animation presets used across every section.
+ * All animations use `fromTo` — never `from` — to ensure elements
+ * are never left in a broken state if a ScrollTrigger fires late.
+ */
 
-// Fade in animation
-export const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1,
-    transition: { duration: 0.6 }
-  }
-};
+// ── Easing ────────────────────────────────────────────────────────────────────
+export const EASE = {
+  /** Standard exit-ease: fast start, smooth deceleration */
+  smooth: 'power3.out',
+  /** Slight overshoot — used for cards and badge pop-ins */
+  spring: 'back.out(1.5)',
+  /** Symmetric — used for image/clip reveals */
+  inOut: 'power3.inOut',
+} as const;
 
-// Fade in with upward movement
-export const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.6 }
-  }
-};
+// ── Duration (seconds) ────────────────────────────────────────────────────────
+export const DUR = {
+  fast: 0.55,
+  base: 0.70,
+  slow: 0.90,
+} as const;
 
-// Fade in with downward movement
-export const fadeInDown: Variants = {
-  hidden: { opacity: 0, y: -20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.6 }
-  }
-};
-
-// Fade in with leftward movement
-export const fadeInLeft: Variants = {
-  hidden: { opacity: 0, x: 20 },
-  visible: { 
-    opacity: 1, 
-    x: 0,
-    transition: { duration: 0.6 }
-  }
-};
-
-// Fade in with rightward movement
-export const fadeInRight: Variants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { 
-    opacity: 1, 
-    x: 0,
-    transition: { duration: 0.6 }
-  }
-};
-
-// Scale up animation
-export const scaleUp: Variants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { 
-    opacity: 1, 
-    scale: 1,
-    transition: { duration: 0.5 }
-  }
-};
-
-// Staggered children animation
-export const staggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.3
-    }
-  }
-};
-
-// Animation for individual items in staggered lists
-export const listItem: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3 }
-  }
-};
-
-// Hover animation for interactive elements
-export const hoverScale = {
-  scale: 1.05,
-  transition: { duration: 0.2 }
-};
-
-// Exit animations
-export const exitLeft: Variants = {
-  exit: {
-    x: -100,
+// ── "From" states ─────────────────────────────────────────────────────────────
+export const FROM = {
+  /** Generic below-fold entrance */
+  fadeUp:    { opacity: 0, y: 32 } as gsap.TweenVars,
+  /** Slide in from the left */
+  fadeLeft:  { opacity: 0, x: -40 } as gsap.TweenVars,
+  /** Slide in from the right */
+  fadeRight: { opacity: 0, x: 40 } as gsap.TweenVars,
+  /** Pop-in for cards / badges */
+  popUp:     { opacity: 0, y: 24, scale: 0.94 } as gsap.TweenVars,
+  /** Image reveal: slight zoom + clip */
+  imgReveal: {
     opacity: 0,
-    transition: { duration: 0.3 }
-  }
+    scale: 1.05,
+    clipPath: 'inset(6% 6% 6% 6% round 12px)',
+  } as gsap.TweenVars,
+} as const;
+
+// ── "To" state ────────────────────────────────────────────────────────────────
+export const TO: gsap.TweenVars = {
+  opacity: 1,
+  y: 0,
+  x: 0,
+  scale: 1,
+  clipPath: 'inset(0% 0% 0% 0% round 12px)',
 };
 
-export const exitRight: Variants = {
-  exit: {
-    x: 100,
-    opacity: 0,
-    transition: { duration: 0.3 }
-  }
-};
-
-// Pulse animation for attention-grabbing elements
-export const pulse: Variants = {
-  hidden: { scale: 1 },
-  visible: {
-    scale: [1, 1.05, 1],
-    transition: {
-      duration: 1.5,
-      repeat: Infinity,
-      repeatType: 'loop'
-    }
-  }
-};
+// ── ScrollTrigger start helpers ───────────────────────────────────────────────
+/**
+ * Returns a ScrollTrigger `start` string that fires when the trigger
+ * element is `offset`px above the bottom of the viewport.
+ */
+export function triggerAt(offset = 80): string {
+  return `top bottom-=${offset}`;
+}

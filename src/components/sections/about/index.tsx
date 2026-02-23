@@ -2,12 +2,34 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import CountUp from 'react-countup';
 import HeroImg from '@/assets/hero.webp';
+
+const STATS = [
+  {
+    value: 25,
+    suffix: '+',
+    label: 'Years of\nExcellence',
+    accent: 'bg-brand-green',
+    color: 'text-brand-green',
+  },
+  {
+    value: 7,
+    suffix: '+',
+    label: 'Rice\nVarieties',
+    accent: 'bg-brand-gold',
+    color: 'text-brand-gold',
+  },
+  {
+    value: 100,
+    suffix: '%',
+    label: 'Quality\nAssured',
+    accent: 'bg-brand-green',
+    color: 'text-brand-green',
+  },
+] as const;
 
 // Register ScrollTrigger
 if (typeof window !== 'undefined') {
@@ -22,74 +44,72 @@ export default function About() {
   const [startCounting, setStartCounting] = useState(false);
 
   useEffect(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top center",
-        end: "bottom center",
-      }
-    });
+    const sharedTrigger = {
+      trigger: sectionRef.current,
+      start: 'top bottom-=80',
+    };
 
-    // Main image animation
-    tl.fromTo(imageRef.current,
-      {
-        opacity: 0,
-        x: -50,
-        scale: 0.9
-      },
+    // ── Image column: zoom-out reveal with left slide ─────────────────────────
+    gsap.fromTo(
+      imageRef.current,
+      { opacity: 0, x: -40, scale: 1.03 },
       {
         opacity: 1,
         x: 0,
         scale: 1,
-        duration: 1,
-        ease: "power3.out"
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: sharedTrigger,
       }
     );
 
-    // Content animation
-    tl.fromTo(contentRef.current,
-      {
-        opacity: 0,
-        y: 30
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power2.out"
-      },
-      "-=0.5"
-    );
+    // ── Content column: stagger each text block ───────────────────────────────
+    // Target the direct semantic children — label, heading, paragraphs
+    const textNodes = contentRef.current
+      ? Array.from(
+          contentRef.current.querySelectorAll<HTMLElement>(
+            ':scope > div > h4, :scope > div > h2, :scope > div > div > p'
+          )
+        )
+      : [];
 
-    // Stats animation
-    const statsTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: statsRef.current,
-        start: "top bottom-=100",
-        end: "bottom center",
-        onEnter: () => setStartCounting(true),
-        once: true
-      }
-    });
+    if (textNodes.length) {
+      gsap.fromTo(
+        textNodes,
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: contentRef.current, start: 'top bottom-=60' },
+        }
+      );
+    }
 
-    statsTimeline.fromTo(".stat-card",
-      {
-        opacity: 0,
-        y: 20,
-        scale: 0.95
-      },
+    // ── Stat cards: spring pop-in ─────────────────────────────────────────────
+    gsap.fromTo(
+      '.stat-card',
+      { opacity: 0, y: 28, scale: 0.93 },
       {
         opacity: 1,
         y: 0,
         scale: 1,
-        duration: 0.6,
-        stagger: 0.15,
-        ease: "back.out(1.7)",
+        duration: 0.65,
+        stagger: 0.12,
+        ease: 'back.out(1.5)',
+        scrollTrigger: {
+          trigger: statsRef.current,
+          start: 'top bottom-=60',
+          onEnter: () => setStartCounting(true),
+          once: true,
+        },
       }
     );
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 
@@ -106,6 +126,9 @@ export default function About() {
                   alt="Annadaata Rice Manufacturing Facility"
                   fill
                   className="object-cover"
+                  placeholder="blur"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  quality={85}
                 />
               </div>
             </div>
@@ -138,92 +161,42 @@ export default function About() {
               </div>
             </div>
 
+            {/* Stats strip */}
             <div ref={statsRef}>
-              <Separator className="my-8" />
+              <div className="h-px bg-border mb-8" />
 
-              {/* Stats/highlights */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {/* Years of Excellence Card */}
-                <Card className="stat-card group relative overflow-hidden border-none bg-primary/5 hover:bg-primary/10 transition-all duration-300 transform hover:scale-105">
-                  <CardContent className="p-8 text-center relative z-10">
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                      <div className="flex items-baseline justify-center">
-                        <span className="text-5xl font-bold text-primary">
-                          {startCounting ? (
-                            <CountUp
-                              end={25}
-                              duration={2.5}
-                              separator=""
-                              decimal="."
-                              decimals={0}
-                              enableScrollSpy
-                            />
-                          ) : '0'}
-                        </span>
-                        <span className="text-3xl font-bold text-primary">+</span>
-                      </div>
-                      <p className="text-sm font-medium tracking-wider uppercase text-primary/80">
-                        Years of Excellence
-                      </p>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
-                  </CardContent>
-                </Card>
+              <div className="grid grid-cols-3">
+                {STATS.map((stat, i) => (
+                  <div
+                    key={stat.label}
+                    className={`stat-card group py-2 ${
+                      i > 0 ? 'pl-6 border-l border-border' : 'pr-6'
+                    } ${i === 1 ? 'pr-6' : ''}`}
+                  >
+                    {/* Coloured accent rule */}
+                    <div className={`h-[3px] w-8 rounded-full mb-4 ${stat.accent} transition-all duration-300 group-hover:w-12`} />
 
-                {/* Rice Varieties Card */}
-                <Card className="stat-card group relative overflow-hidden border-none bg-brand-gold/5 hover:bg-brand-gold/10 transition-all duration-300 transform hover:scale-105">
-                  <CardContent className="p-8 text-center relative z-10">
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                      <div className="flex items-baseline justify-center">
-                        <span className="text-5xl font-bold text-brand-gold">
-                          {startCounting ? (
-                            <CountUp
-                              end={7}
-                              duration={2}
-                              separator=""
-                              enableScrollSpy
-                            />
-                          ) : '0'}
-                        </span>
-                        <span className="text-3xl font-bold text-brand-gold">+</span>
-                      </div>
-                      <p className="text-sm font-medium tracking-wider uppercase text-brand-gold/80">
-                        Rice<br /> Varieties
-                      </p>
+                    {/* Number */}
+                    <div className="flex items-baseline gap-0.5 leading-none mb-2">
+                      <span className={`text-5xl md:text-6xl font-heading font-black tabular-nums ${stat.color}`}>
+                        {startCounting ? (
+                          <CountUp end={stat.value} duration={2.2} separator="" />
+                        ) : (
+                          '0'
+                        )}
+                      </span>
+                      <span className={`text-2xl md:text-3xl font-heading font-bold ${stat.color}`}>
+                        {stat.suffix}
+                      </span>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-gold/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
-                  </CardContent>
-                </Card>
 
-                {/* Quality Assured Card */}
-                <Card className="stat-card group relative overflow-hidden border-none bg-primary/5 hover:bg-primary/10 transition-all duration-300 transform hover:scale-105">
-                  <CardContent className="p-8 text-center relative z-10">
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                      <div className="flex items-baseline justify-center">
-                        <span className="text-5xl font-bold text-primary">
-                          {startCounting ? (
-                            <CountUp
-                              end={100}
-                              duration={2.5}
-                              separator=""
-                              enableScrollSpy
-                            />
-                          ) : '0'}
-                        </span>
-                        <span className="text-3xl font-bold text-primary">%</span>
-                      </div>
-                      <p className="text-sm font-medium tracking-wider uppercase text-primary/80">
-                        Quality Assured
-                      </p>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
-                  </CardContent>
-                </Card>
+                    {/* Label */}
+                    <p className="text-[11px] font-accent font-semibold tracking-[0.14em] uppercase text-muted-foreground leading-snug whitespace-pre-line">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
               </div>
-              {/*               
-              <Button size="lg" className="w-full sm:w-auto">
-                Explore Our Heritage
-              </Button> */}
             </div>
           </div>
         </div>

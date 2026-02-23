@@ -23,78 +23,77 @@ export default function Hero() {
   const statsRef = useRef(null);
 
   useEffect(() => {
-    // Main timeline for hero animations
-    const tl = gsap.timeline({
-      defaults: {
-        ease: "power3.out",
-        duration: 1
-      }
-    });
+    // ── Above-fold entrance: stagger left column, then reveal image ──────────
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    // Hero section animations
-    tl.fromTo(headingRef.current,
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1 }
+    // Text column: elements cascade from top-to-bottom of the column
+    tl.fromTo(
+      subheadingRef.current,
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 0.65 }
     )
-      .fromTo(subheadingRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1 },
-        "-=0.5"
+      .fromTo(
+        headingRef.current,
+        { opacity: 0, y: 32 },
+        { opacity: 1, y: 0, duration: 0.75 },
+        '-=0.42'
       )
-      .fromTo(descriptionRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1 },
-        "-=0.5"
+      .fromTo(
+        descriptionRef.current,
+        { opacity: 0, y: 28 },
+        { opacity: 1, y: 0, duration: 0.65 },
+        '-=0.45'
       )
-      .fromTo(ctaRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1 },
-        "-=0.3"
+      .fromTo(
+        ctaRef.current,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.6 },
+        '-=0.38'
       )
-      .fromTo(taglineRef.current,
-        { y: 20, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-        },
-        "-=0.2"
-      )
-      .fromTo(imageRef.current,
-        {
-          clipPath: "polygon(0 0, 0 0, 0 100%, 0% 100%)",
-          scale: 1.1
-        },
-        {
-          clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-          scale: 1,
-          duration: 1.5
-        },
-        "-=1"
+      .fromTo(
+        taglineRef.current,
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.5 },
+        '-=0.32'
       );
 
-    // Stats animation on scroll
-    gsap.fromTo(statsRef.current,
+    // Image: zoom-out reveal with clip, starts while text is mid-way through
+    tl.fromTo(
+      imageRef.current,
       {
-        y: 50,
-        opacity: 0
+        opacity: 0,
+        scale: 1.06,
+        clipPath: 'inset(8% 8% 8% 8% round 16px)',
       },
       {
-        y: 0,
         opacity: 1,
-        duration: 0.8,
+        scale: 1,
+        clipPath: 'inset(0% 0% 0% 0% round 16px)',
+        duration: 1.1,
+        ease: 'power3.inOut',
+      },
+      0.18 // absolute start time — concurrent with early text
+    );
+
+    // ── Stats strip: fires on scroll ─────────────────────────────────────────
+    gsap.fromTo(
+      statsRef.current,
+      { opacity: 0, y: 36 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.75,
+        ease: 'power3.out',
         scrollTrigger: {
           trigger: statsRef.current,
-          start: "top bottom-=100",
-          toggleActions: "play none none reverse"
-        }
+          start: 'top bottom-=80',
+        },
       }
     );
 
-    // Cleanup
     return () => {
       tl.kill();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 
@@ -185,6 +184,9 @@ export default function Hero() {
                 fill
                 className="object-cover"
                 priority
+                placeholder="blur"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 50vw"
+                quality={85}
               />
             </div>
 

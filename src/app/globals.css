@@ -86,7 +86,20 @@
   .animate-grain {
     animation: grain 8s steps(10) infinite;
   }
-  
+
+  .animate-slow-spin {
+    animation: slow-spin 30s linear infinite;
+  }
+
+  @keyframes slow-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  @keyframes shimmer {
+    100% { transform: translateX(200%); }
+  }
+
   @keyframes grain {
     0%, 100% { transform: translate(0, 0) }
     10% { transform: translate(-1%, -1%) }
